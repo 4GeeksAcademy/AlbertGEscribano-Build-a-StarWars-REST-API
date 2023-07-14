@@ -10,7 +10,6 @@ class User(db.Model):
     surname = db.Column(db.String(250), nullable=False)
     phone_number = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), nullable=False)
-    inscription_date = db.Column(db.String(250), nullable=False)
     addresses = db.relationship('Address', backref='user')
 
     def __init__(self, **kwargs):
@@ -28,7 +27,6 @@ class User(db.Model):
             "surname": self.surname,
             "phone_number": self.phone_number,
             "email": self.email,
-            "inscription_date": self.inscription_date
         }
 
     def to_dict(self):
@@ -65,8 +63,11 @@ class Planet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
     description = db.Column(db.String(250))
-    size = db.Column(db.Integer)
-    favorite = db.relationship('FavoriteList', backref='planet')
+    population = db.Column(db.Integer)
+    terrain = db.Column(db.String(25))
+    diameter = db.Column(db.Integer)
+    orbital_period = db.Column(db.Integer)
+    
 
     def __init__(self, **kwargs):
         super(Planet, self).__init__(**kwargs)
@@ -79,8 +80,10 @@ class Planet(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "size": self.size,
-            "favorite_list_id": self.favorite_list_id
+            "population": self.population,
+            "terrain": self.terrain,
+            "diameter": self.diameter,
+            "orbital_period": self.orbital_period,
         }
 
     def to_dict(self):
@@ -91,9 +94,12 @@ class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
     description = db.Column(db.String(250))
-    age = db.Column(db.Integer)
-    weapon = db.Column(db.String(250))
-    favorite = db.relationship('FavoriteList', backref='character')
+    eye_color = db.Column(db.String(20))
+    hair_color = db.Column(db.String(20))
+    gender = db.Column(db.String(20))
+    height = db.Column(db.Integer)
+    birth_date = db.Column(db.Integer)
+    
 
     def __init__(self, **kwargs):
         super(Character, self).__init__(**kwargs)
@@ -106,9 +112,11 @@ class Character(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "age": self.age,
-            "weapon": self.weapon,
-            "favorite_list_id": self.favorite_list_id
+            "eye_color": self.eye_color,
+            "hair_color": self.hair_color,
+            "gender": self.gender,
+            "height": self.height,
+            "birth_date": self.birth_date
         }
 
     def to_dict(self):
@@ -119,9 +127,12 @@ class Vehicle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
     description = db.Column(db.String(250))
-    age = db.Column(db.Integer)
-    weapon = db.Column(db.String(250))
-    favorite = db.relationship('FavoriteList', backref='vehicle')
+    model = db.Column(db.String(250))
+    manufacturer = db.Column(db.String(250))
+    passengers = db.Column(db.Integer)
+    max_speed = db.Column(db.Integer)
+    vehicle_class = db.Column(db.String(250))
+    
 
     def __init__(self, **kwargs):
         super(Vehicle, self).__init__(**kwargs)
@@ -134,37 +145,76 @@ class Vehicle(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "age": self.age,
-            "weapon": self.weapon,
-            "favorite_list_id": self.favorite_list_id
+            "model": self.model,
+            "manufacturer": self.manufacturer,
+            "passengers": self.passengers,
+            "max_speed": self.max_speed,
+            "vehicle_class": self.vehicle_class
         }
 
     def to_dict(self):
         return self.serialize()
 
 
-class FavoriteList(db.Model):
+class Character_Favorite_List(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'))
     character_id = db.Column(db.Integer, db.ForeignKey('character.id'))
-    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicle.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, **kwargs):
-        super(FavoriteList, self).__init__(**kwargs)
+        super(Character_Favorite_List, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<FavoriteList %r>' % self.id
+        return '<Character_Favorite_List %r>' % self.id
 
     def serialize(self):
         return {
             "id": self.id,
-            "planet_id": self.planet_id,
             "character_id": self.character_id,
-            "vehicle_id": self.vehicle_id,
             "user_id": self.user_id
         }
 
     def to_dict(self):
         return self.serialize()
 
+class Planet_Favorite_List(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __init__(self, **kwargs):
+        super(Planet_Favorite_List, self).__init__(**kwargs)
+
+    def __repr__(self):
+        return '<Planet_Favorite_List %r>' % self.id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "Planet_id": self.planet_id,
+            "user_id": self.user_id
+        }
+
+    def to_dict(self):
+        return self.serialize()
+
+class Vehicle_Favorite_List(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicle.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __init__(self, **kwargs):
+        super(Vehicle_Favorite_List_Favorite_List, self).__init__(**kwargs)
+
+    def __repr__(self):
+        return '<Vehicle_Favorite_List %r>' % self.id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "vehicle_id": self.vehicle_id,
+            "user_id": self.user_id
+        }
+
+    def to_dict(self):
+        return self.serialize()
