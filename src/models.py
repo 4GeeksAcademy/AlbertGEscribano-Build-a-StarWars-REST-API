@@ -204,7 +204,7 @@ class Vehicle_Favorite_List(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, **kwargs):
-        super(Vehicle_Favorite_List_Favorite_List, self).__init__(**kwargs)
+        super(Vehicle_Favorite_List, self).__init__(**kwargs)
 
     def __repr__(self):
         return '<Vehicle_Favorite_List %r>' % self.id
